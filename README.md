@@ -1,2 +1,2 @@
-# group_list_subs_counter
+# vk_group_list_subs_counter
 Парсер вконтакте по списку групп со сбором количества подписчиков.
