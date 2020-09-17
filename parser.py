@@ -38,7 +38,7 @@ def prepare_data(driver, groups_list):
     res = []
     for group in groups_list:
         subs = get_group_subs_number(driver, group['url'])
-        res.append({'name': group['name'], 'subs': subs})
+        res.append({'name': group['name'], 'city': group['city'], 'subs': subs})
     return res
 
 

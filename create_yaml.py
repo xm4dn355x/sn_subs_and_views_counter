@@ -17,22 +17,27 @@ if __name__ == '__main__':
     settings = [
         {
             'name': 'В Салехарде',
+            'city': 'г. Салехард',
             'url': 'https://vk.com/inshd'
         },
         {
             'name': 'Подслушано в Салехарде',
+            'city': 'г. Салехард',
             'url': 'https://vk.com/hearsalehard'
         },
         {
             'name': 'В Салехарде.ru',
+            'city': 'г. Салехард',
             'url': 'https://vk.com/vsaleharderu'
         },
         {
             'name': 'Салехард',
+            'city': 'г. Салехард',
             'url': 'https://vk.com/public124643438'
         },
         {
             'name': 'Афиша В Салехарде',
+            'city': 'г. Салехард',
             'url': 'https://vk.com/afisha_shd'
         },
     ]
