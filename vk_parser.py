@@ -55,4 +55,3 @@ if __name__ == '__main__':
     print("Парсер групп вконтакте с целью поиска количества подписчиков")
     data = get_all_subs_numbers()
     print(data)
-
