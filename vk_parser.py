@@ -26,9 +26,12 @@ def get_groups_list():
 def get_group_subs_number(driver, url):
     """Получает HTML и находит в нём количество подписчиков"""
     driver.get(url)
+    sleep(1)
     try:
         res = int(driver.find_element_by_class_name('group_friends_count').text.strip())
     except NoSuchElementException:
+        text = driver.find_element_by_class_name('header_count')
+        print(text)
         res = int(driver.find_element_by_class_name('header_count').text.replace(" ", '').strip())
     return res
 
@@ -53,5 +56,10 @@ def get_all_subs_numbers():
 
 if __name__ == '__main__':
     print("Парсер групп вконтакте с целью поиска количества подписчиков")
-    data = get_all_subs_numbers()
-    print(data)
+    # data = get_all_subs_numbers()
+    # print(data)
+    url =  "https://vk.com/aksarka"
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver.get("https://vk.com/hearsalehard")
+    subs = get_group_subs_number(driver, url)
+    print(subs)
