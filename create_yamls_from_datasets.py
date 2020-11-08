@@ -68,8 +68,8 @@ def create_yaml(dataset: list, filename: str):
 
 def create_all_yamls(csv_path: str, xlsx_path: str, xlsx_rows_count: int):
     """Создает все необходимые yaml файлы"""
-    vk, ok, fb, ig, yt, mass_media, misc = read_csv(filename=csv_path)
-    tg = read_xlsx(filename=xlsx_path, rows_count=xlsx_rows_count)
+    vk, ok, fb, ig, yt, mass_media, misc = read_csv(filename=csv_path)  # Читает данные из CSV-файла
+    tg = read_xlsx(filename=xlsx_path, rows_count=xlsx_rows_count)      # Читает данные из xlsx-файла
     create_yaml(vk, 'yamls/vk.yml')
     create_yaml(ok, 'yamls/ok.yml')
     create_yaml(tg, 'yamls/tg.yml')
