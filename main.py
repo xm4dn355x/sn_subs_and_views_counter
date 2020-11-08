@@ -9,15 +9,15 @@
 #####################################################################################################################
 
 
-from create_yaml import create_yaml
-from vk_parser import get_all_subs_numbers
-from export_to_xls import create_xls
+from create_yamls import create_all_yamls
+
+
+# Globals
+CSV_PATH = 'data/information_map_20_11_06.csv'
+XLSX_PATH = 'data/tg_digest_20_11_03.xlsx'
+XLSX_ROWS_COUNT = 81
 
 
 if __name__ == '__main__':
     print("VK Group list subscribers counter")
-    create_yaml()
-    print('\nStart parsing data')
-    data = get_all_subs_numbers()
-    print('Create Excel document')
-    create_xls(data)
+    create_all_yamls(csv_path=CSV_PATH, xlsx_path=XLSX_PATH, xlsx_rows_count=XLSX_ROWS_COUNT)
