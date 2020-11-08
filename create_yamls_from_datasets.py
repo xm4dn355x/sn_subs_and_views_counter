@@ -21,42 +21,43 @@ CSV_PATH = 'data/information_map_20_11_06.csv'
 XLSX_PATH = 'data/tg_digest_20_11_03.xlsx'
 XLSX_ROWS_COUNT = 81
 
-VK = []
-OK = []
-TG = []
-FB = []
-IG = []
-YT = []
-MASS_MEDIA = []
-MISC = []
-
 
 def read_csv(filename):
     """Читает CSV файл и записывает данные в глобальные переменные имена/названия локации и ссылки"""
+    vk = []
+    ok = []
+    fb = []
+    ig = []
+    yt = []
+    mass_media = []
+    misc = []
     with open(filename, mode='r', encoding='utf-8') as csvfile:
         csvdata = csv.DictReader(csvfile, delimiter=',')
         for row in csvdata:
             if row['Соцсеть'] == 'ВКонтакте':
-                VK.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                vk.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
             elif row['Соцсеть'] == 'Инстаграм':
-                IG.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                ig.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
             elif row['Соцсеть'] == 'ОК':
-                OK.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                ok.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
             elif row['Соцсеть'] == 'Фейсбук':
-                FB.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                fb.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
             elif row['Соцсеть'] == 'Ютуб':
-                YT.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                yt.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
             elif row['Соцсеть'] == 'Интернет':
-                MASS_MEDIA.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                mass_media.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
             else:
-                MISC.append(row)
+                misc.append(row)
+    return vk, ok, fb, ig, yt, mass_media, misc
 
 
 def read_xlsx(filename: str, rows_count: int):
     """Читает документ xlsx и записывает данные в глобальную переменную названия телеграм каналов, локации и ссылки"""
+    tg = []
     worksheet = xlrd.open_workbook(filename, on_demand=True).sheet_by_index(0)
     for i in range(rows_count):
-        TG.append({'name': worksheet.cell(i, 0).value, 'location': '', 'link': worksheet.cell(i, 1).value})
+        tg.append({'name': worksheet.cell(i, 0).value, 'location': '', 'link': worksheet.cell(i, 1).value})
+    return tg
 
 
 def create_yaml(dataset: list, filename: str):
@@ -65,21 +66,21 @@ def create_yaml(dataset: list, filename: str):
         yaml_file.write(yaml.dump(dataset))
 
 
-def create_all_yamls():
+def create_all_yamls(csv_path: str, xlsx_path: str, xlsx_rows_count: int):
     """Создает все необходимые yaml файлы"""
-    create_yaml(VK, 'yamls/vk.yml')
-    create_yaml(OK, 'yamls/ok.yml')
-    create_yaml(TG, 'yamls/tg.yml')
-    create_yaml(FB, 'yamls/fb.yml')
-    create_yaml(IG, 'yamls/ig.yml')
-    create_yaml(YT, 'yamls/yt.yml')
-    create_yaml(MASS_MEDIA, 'yamls/mm.yml')
-    create_yaml(MISC, 'yamls/misc.yml')
-    print('all files created succesfully')
+    vk, ok, fb, ig, yt, mass_media, misc = read_csv(filename=csv_path)
+    tg = read_xlsx(filename=xlsx_path, rows_count=xlsx_rows_count)
+    create_yaml(vk, 'yamls/vk.yml')
+    create_yaml(ok, 'yamls/ok.yml')
+    create_yaml(tg, 'yamls/tg.yml')
+    create_yaml(fb, 'yamls/fb.yml')
+    create_yaml(ig, 'yamls/ig.yml')
+    create_yaml(yt, 'yamls/yt.yml')
+    create_yaml(mass_media, 'yamls/mm.yml')
+    create_yaml(misc, 'yamls/misc.yml')
+    print('all yaml files created succesfully')
 
 
 if __name__ == '__main__':
     print('create_vk_list_yaml')
-    read_csv(CSV_PATH)
-    read_xlsx(XLSX_PATH, XLSX_ROWS_COUNT)
-    create_all_yamls()
+    create_all_yamls(csv_path=CSV_PATH, xlsx_path=XLSX_PATH, xlsx_rows_count=XLSX_ROWS_COUNT)
