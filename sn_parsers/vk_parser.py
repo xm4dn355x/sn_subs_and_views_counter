@@ -22,7 +22,7 @@ import yaml
 
 def get_agents_list():
     """Читает YAML документ со списком агентов и возвращает список словарей с названиями, локациями и их URL"""
-    with open('../yamls/vk.yml') as f:
+    with open('yamls/vk.yml') as f:
         groups = yaml.safe_load(f)
     return groups
 
@@ -211,7 +211,7 @@ def parsing_thread(data: list, number_of_thread: int):
                 'comments': comments,
             }
         )
-    filename = f'../subresults/vk_subres{number_of_thread}.yml'
+    filename = f'subresults/vk_subres{number_of_thread}.yml'
     with open(filename, mode='w', encoding='utf-8') as yaml_file:
         yaml_file.write(yaml.dump(res))
     driver.quit()
@@ -259,7 +259,7 @@ def concatenate_subresults():
     """Объединяет промежуточные результаты потоков в один результат"""
     res = []
     for i in range(1, 7):
-        with open(f'../subresults/vk_subres{i}.yml', encoding='utf-8') as f:
+        with open(f'subresults/vk_subres{i}.yml', encoding='utf-8') as f:
             subres = yaml.safe_load(f)
             for sub in subres:
                 res.append(sub)
