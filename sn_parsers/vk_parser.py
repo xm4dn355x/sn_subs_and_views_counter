@@ -222,12 +222,12 @@ def parsing_thread(data: list, number_of_thread: int):
 def parse_vk():
     """Выполняет всю грязную работу по парсингу ВКонтакте и возвращает готовые для записи данные"""
     agents_list = get_agents_list()
-    first_thread_agents_list = agents_list[:40]
-    second_thread_agents_list = agents_list[40:80]
-    third_thread_agents_list = agents_list[80:120]
-    fourth_thread_agents_list = agents_list[120:160]
-    fifth_thread_agents_list = agents_list[160:200]
-    sixth_thread_agents_list = agents_list[200:]
+    first_thread_agents_list = agents_list[:10]
+    second_thread_agents_list = agents_list[10:60]
+    third_thread_agents_list = agents_list[60:100]
+    fourth_thread_agents_list = agents_list[100:140]
+    fifth_thread_agents_list = agents_list[140:190]
+    sixth_thread_agents_list = agents_list[190:]
     t1 = threading.Thread(target=parsing_thread, args=(first_thread_agents_list, 1))
     t2 = threading.Thread(target=parsing_thread, args=(second_thread_agents_list, 2))
     t3 = threading.Thread(target=parsing_thread, args=(third_thread_agents_list, 3))
