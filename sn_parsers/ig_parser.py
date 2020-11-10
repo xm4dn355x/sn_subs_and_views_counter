@@ -10,7 +10,7 @@
 
 
 def parse_ig():
-    return [{'name': 'ololol', 'sn': 'Инстаграм', 'link': 'https://instagram.com', 'location': 'Салехард', 'subs': 1488, 'views': 420},]
+    return [{'comments': 2.86, 'likes': 36.43, 'link': 'https://vk.com/club9792', 'location': 'Новый Уренгой', 'name': 'ГОРОРО | Новый Уренгой', 'sn': 'ВКонтакте', 'subs': 71376, 'views': 5686.94},]
 
 
 if __name__ == '__main__':
