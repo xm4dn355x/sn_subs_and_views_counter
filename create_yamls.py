@@ -35,17 +35,17 @@ def read_csv(filename):
         csvdata = csv.DictReader(csvfile, delimiter=',')
         for row in csvdata:
             if row['Соцсеть'] == 'ВКонтакте':
-                vk.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                vk.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка'], 'theme': row['Тематика']})
             elif row['Соцсеть'] == 'Инстаграм':
-                ig.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                ig.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка'], 'theme': row['Тематика']})
             elif row['Соцсеть'] == 'ОК':
-                ok.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                ok.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка'], 'theme': row['Тематика']})
             elif row['Соцсеть'] == 'Фейсбук':
-                fb.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                fb.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка'], 'theme': row['Тематика']})
             elif row['Соцсеть'] == 'Ютуб':
-                yt.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                yt.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка'], 'theme': row['Тематика']})
             elif row['Соцсеть'] == 'Интернет':
-                mass_media.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка']})
+                mass_media.append({'name': row['\ufeffName'], 'location': row['Локация'], 'link': row['Ссылка'], 'theme': row['Тематика']})
             else:
                 misc.append(row)
     return vk, ok, fb, ig, yt, mass_media, misc
