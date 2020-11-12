@@ -27,35 +27,36 @@ def get_agents_list():
     return groups
 
 
-def get_group_subs_count_and_views(driver, url):
+def get_group_data(driver, url):
     """Получает driver и URL группы и возвращает количество подписчиков и среднее число просмотров за месяц"""
     try:
         driver.get(url)
     except InvalidArgumentException:
         print('НЕПРАВИЛЬНЫЙ URL!!!!')
-        return 0, 0, 0, 0
+        return 0, 0, 0, 0, 0
     sleep(1)
     try:
         subs = int(driver.find_element_by_class_name('page_counter').find_element_by_class_name('count').text.replace(' ', ''))
-        views, likes, comments = get_median_views_count(driver, url)
+        views, likes, comments, posts_freq = get_wall_median_data(driver, url)
     except NoSuchElementException:
         try:
             subs = int(driver.find_element_by_class_name('group_friends_count').text.strip())
-            views, likes, comments = get_median_views_count(driver, url)
+            views, likes, comments, posts_freq = get_wall_median_data(driver, url)
         except NoSuchElementException:
             try:
                 subs = int(driver.find_element_by_class_name('header_count').text.replace(" ", '').strip())
-                views, likes, comments = get_median_views_count(driver, url)
+                views, likes, comments, posts_freq = get_wall_median_data(driver, url)
             except NoSuchElementException:
                 print('NoSuchElementException. Видимо страница скрыта!')
                 subs = 0
                 views = 0
                 likes = 0
                 comments = 0
-    return subs, views, likes, comments
+                posts_freq = 0
+    return subs, views, likes, comments, posts_freq
 
 
-def get_median_views_count(driver, url):
+def get_wall_median_data(driver, url):
     """Считает среднее количество просмотров, лайков и комментариев"""
     TARGET_MONTH = 'окт'
     CURRENT_MONTH = 'ноя'
@@ -78,7 +79,7 @@ def get_median_views_count(driver, url):
     except:
         error = None
     if error == 'Ошибка':
-        return 0, 0, 0
+        return 0, 0, 0, 0
     while True:
         driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
         sleep(0.5)
@@ -101,6 +102,7 @@ def get_median_views_count(driver, url):
     views = []
     likes = []
     comments = []
+    posts_freq = len(posts)
     for post in posts:
         while True:
             try:
@@ -179,7 +181,7 @@ def get_median_views_count(driver, url):
     except ZeroDivisionError:
         comments_median = 0
 
-    return round(views_median, 2), round(likes_median, 2), round(comments_median, 2)
+    return round(views_median, 2), round(likes_median, 2), round(comments_median, 2), posts_freq
 
 
 def convert_text_count_to_int(text):
@@ -198,17 +200,19 @@ def parsing_thread(data: list, number_of_thread: int):
     res = []
     driver = webdriver.Chrome(ChromeDriverManager().install())
     for agent in data:
-        subs, views, likes, comments = get_group_subs_count_and_views(driver=driver, url=agent['link'])
+        subs, views, likes, comments, posts_freq = get_group_data(driver=driver, url=agent['link'])
         res.append(
             {
                 'name': agent['name'],
                 'sn': 'ВКонтакте',
                 'link': agent['link'],
                 'location': agent['location'],
+                'theme': agent['theme'],
                 'subs': subs,
                 'views': views,
                 'likes': likes,
                 'comments': comments,
+                'posts_freq': posts_freq
             }
         )
     filename = f'subresults/vk_subres{number_of_thread}.yml'
