@@ -27,9 +27,13 @@ def get_agents_list():
 def get_posts_list_and_subs(driver: webdriver, url: str, months: list):
     """Прогружает страницу пользователя и возвращает список из большинства последних постов"""
     driver.get(url)
-    subs = int(driver.find_elements_by_class_name('g47SY')[1].get_attribute('title').replace(' ', ''))
-    print(f'{subs} подписчиков')
     sleep(2)
+    try:
+        subs = int(driver.find_elements_by_class_name('g47SY')[1].get_attribute('title').replace(' ', ''))
+        print(f'{subs} подписчиков')
+    except IndexError:
+        subs = 0
+        print(f'У аккаунта {url} не получилось собрать количество подписчиков')
     driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
     sleep(2)
     posts = driver.find_elements_by_class_name('v1Nh3')
@@ -73,7 +77,16 @@ def filter_posts_list(driver: webdriver, months: list, posts_list: list) -> list
                     res.append(post_url)
         except NoSuchElementException:
             print(f'ДАТУ НЕ НАХОДИТ!!! ПОСТ {post_url}')
-            res.append(post_url)
+            driver.get(post_url)
+            try:
+                sleep(2)
+                time = driver.find_element_by_class_name('Nzb55').get_attribute('datetime')
+                for month in months:
+                    if time[0:7] == month:
+                        res.append(post_url)
+            except NoSuchElementException:
+                print(f'ДАТУ НЕ НАХОДИТ ВТОРОЙ РАЗ!!! ПОСТ {post_url}')
+                res.append(post_url)
     return res
 
 
@@ -85,12 +98,20 @@ def parse_post_data(driver: webdriver, url):
         views = 0
     except NoSuchElementException:
         print('это видео')
-        button = driver.find_element_by_class_name('vcOH2')
-        views = int(button.find_element_by_tag_name('span').text.replace(' ', ''))
-        button.click()
-        likes = int(driver.find_element_by_class_name('vJRqr').find_element_by_tag_name('span').text.replace(' ', ''))
-        button = driver.find_element_by_class_name('QhbhU')
-        button.click()
+        try:
+            button = driver.find_element_by_class_name('vcOH2')
+            views = int(button.find_element_by_tag_name('span').text.replace(' ', ''))
+            button.click()
+            likes = int(driver.find_element_by_class_name('vJRqr').find_element_by_tag_name('span').text.replace(' ', ''))
+            button = driver.find_element_by_class_name('QhbhU')
+            button.click()
+        except NoSuchElementException:
+            views = 0
+            try:
+                likes = int(driver.find_element_by_class_name('vJRqr').find_element_by_tag_name('span').text.replace(' ', ''))
+            except NoSuchElementException:
+                likes = 0
+                print(f'Нихуя не нашло у поста: {url}')
     comments = get_comments_count(driver=driver)
     return likes, views, comments
 
@@ -226,7 +247,7 @@ def parsing_thread(accounts: list, month: str, prev_month: str, prev_prev_month:
 def concatenate_subresults():
     """Объединяет промежуточные результаты потоков в один результат"""
     res = []
-    for i in range(1, 11):                                                      # СТАВИМ ОБРАТНО 11 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    for i in range(12, 13):                                                      # СТАВИМ ОБРАТНО 13 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         with open(f'subresults/ig_subres{i}.yml', encoding='utf-8') as f:
             subres = yaml.safe_load(f)
             for sub in subres:
@@ -236,8 +257,9 @@ def concatenate_subresults():
 
 def parse_ig(month, p_month, p_p_month):
     accounts = get_agents_list()
-    first_thread_accounts_list = accounts[:10]                                   # СТАВИМ ОБРАТНО 10 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    second_thread_accounts_list = accounts[10:20]                                 # СТАВИМ ОБРАТНО 10:20 !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    print(f'Количество аккаунтов инстаграм: {len(accounts)}')
+    first_thread_accounts_list = accounts[:10]
+    second_thread_accounts_list = accounts[10:20]
     third_thread_accounts_list = accounts[20:30]
     fourth_thread_accounts_list = accounts[30:40]
     fifth_thread_accounts_list = accounts[40:50]
@@ -245,7 +267,9 @@ def parse_ig(month, p_month, p_p_month):
     seventh_thread_accounts_list = accounts[60:70]
     eighth_thread_accounts_list = accounts[70:80]
     nineth_thread_accounts_list = accounts[80:90]
-    tenth_thread_accounts_list = accounts[90:]
+    tenth_thread_accounts_list = accounts[90:100]
+    eleventh_thread_accounts_list = accounts[100:110]
+    twelfth_thread_accounts_list = accounts[110:]
     t1 = threading.Thread(target=parsing_thread, args=(first_thread_accounts_list, month, p_month, p_p_month, 1))
     t2 = threading.Thread(target=parsing_thread, args=(second_thread_accounts_list, month, p_month, p_p_month, 2))
     t3 = threading.Thread(target=parsing_thread, args=(third_thread_accounts_list, month, p_month, p_p_month, 3))
@@ -256,35 +280,43 @@ def parse_ig(month, p_month, p_p_month):
     t8 = threading.Thread(target=parsing_thread, args=(eighth_thread_accounts_list, month, p_month, p_p_month, 8))
     t9 = threading.Thread(target=parsing_thread, args=(nineth_thread_accounts_list, month, p_month, p_p_month, 9))
     t10 = threading.Thread(target=parsing_thread, args=(tenth_thread_accounts_list, month, p_month, p_p_month, 10))
-    t1.start()
-    sleep(1)
-    t2.start()
-    sleep(1)
-    t3.start()
-    sleep(1)
-    t4.start()
-    sleep(1)
-    t5.start()
-    sleep(1)
-    t6.start()
-    sleep(1)
-    t7.start()
-    sleep(1)
-    t8.start()
-    sleep(1)
-    t9.start()
-    sleep(1)
-    t10.start()
-    t1.join()
-    t2.join()
-    t3.join()
-    t4.join()
-    t5.join()
-    t6.join()
-    t7.join()
-    t8.join()
-    t9.join()
-    t10.join()
+    t11 = threading.Thread(target=parsing_thread, args=(eleventh_thread_accounts_list, month, p_month, p_p_month, 11))
+    t12 = threading.Thread(target=parsing_thread, args=(twelfth_thread_accounts_list, month, p_month, p_p_month, 12))
+    # t1.start()
+    # sleep(1)
+    # t2.start()
+    # sleep(1)
+    # t3.start()
+    # sleep(1)
+    # t4.start()
+    # sleep(1)
+    # t5.start()
+    # sleep(1)
+    # t6.start()
+    # sleep(1)
+    # t7.start()
+    # sleep(1)
+    # t8.start()
+    # sleep(1)
+    # t9.start()
+    # sleep(1)
+    # t10.start()
+    # sleep(1)
+    # t11.start()
+    # sleep(1)
+    t12.start()
+    # t1.join()
+    # t2.join()
+    # t3.join()
+    # t4.join()
+    # t5.join()
+    # t6.join()
+    # t7.join()
+    # t8.join()
+    # t9.join()
+    # t10.join()
+    # t11.join()
+    t12.join()
     res = concatenate_subresults()
     return res
 
