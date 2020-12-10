@@ -18,12 +18,11 @@ import yaml
 HEADER = [
     '№',
     'Имя/название',
-    'Соцсеть',
     'Территория',
     'Ссылка',
     'Тема'
 ]
-COLS_WIDTH = [1455, 12000, 4500, 6500, 9000, 4700]
+COLS_WIDTH = [1455, 12000, 6500, 9000, 4700]
 
 
 def get_agents_list(name: str):
@@ -61,7 +60,7 @@ def render_table(sheet, header, width, data, header_style, data_style, tt_id_sty
     i = 1
     for d in data:
         sheet.row(i + 1).height = 2500
-        cols = [i, 'name', 'sn', 'location', 'link', 'theme']
+        cols = [i, 'name', 'location', 'link', 'theme']
         for col in range(len(cols)):
             if col == 0:
                 sheet.write(i, col, i, tt_id_style)
